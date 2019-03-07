@@ -1,38 +1,48 @@
 <template>
-  <div id="app" class="container">
-    <button @click="selectedComponent = 'appQuote'">Quote</button>
-    <button @click="selectedComponent = 'appAuthor'">Author</button>
-    <button @click="selectedComponent = 'appNew'">New</button>
-    <hr>
-    <p>{{ selectedComponent }}</p>
-    <keep-alive>
-      <component :is="selectedComponent">
-        <p>Default Content</p>
-      </component>
-    </keep-alive>
-<!--    <app-quote>
-      <h2 slot="title">{{ quoteTitle }}</h2>
-      <p>A wonderful quote!</p>
-    </app-quote>-->
+  <div class="container">
+    <app-header :quoteCount="quotes.length" :maxQuotes="maxQuotes"></app-header>
+    <app-new-quote @quoteAdded="newQuote"></app-new-quote>
+    <app-quote-grid :quotes="quotes" @quoteDeleted="quoteDeleted"></app-quote-grid>
+    <div class="row">
+      <div class="col-sm-12 text-center">
+        <div class="alert alert-info">Info: click on a Quote to Delete it!</div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-  import Quote from './components/Qoute'
-  import New from './components/New'
-  import Author from './components/Author'
-export default {
-      data : function(){
-        return{
-            quoteTitle : 'The Quote',
-            selectedComponent : 'appQuote'
-        }
+
+  import QuoteGrid from './components/QuoteGrid'
+  import NewQuote from './components/NewQuote'
+  import Header from './components/Header'
+
+  export default {
+
+  data: function () {
+      return {
+          quotes : [
+              'Just a Quote to see something'
+          ],
+          maxQuotes : 10
+      }
+  },
+  methods: {
+      newQuote(quote){
+          if (this.quotes.length >= this.maxQuotes ){
+              return alert('Please delete Quotes first!')
+          }
+          this.quotes.push(quote)
       },
-    components: {
-        appQuote : Quote,
-        appNew : New,
-        appAuthor : Author
-    }
+      quoteDeleted(index){
+          this.quotes.splice(index,1)
+      }
+  },
+  components : {
+      appQuoteGrid : QuoteGrid,
+      appNewQuote : NewQuote,
+      appHeader: Header
+  }
 }
 </script>
 
